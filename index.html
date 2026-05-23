@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Kailey's Scooter Quest 👑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #fdf2f5;
+    --bg-deep:   #f9dee4;
+    --card:      #fffafc;
+    --rose:      #d97a92;
+    --rose-deep: #b85978;
+    --gold:      #d4a373;
+    --ink:       #4a2a35;
+    --muted:     #93697a;
+    --good:      #6fb27c;
+    --shadow:    0 6px 18px rgba(180, 90, 120, 0.12);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Quicksand', system-ui, sans-serif;
+    background:
+      radial-gradient(circle at 20% 10%, #fbe2ea 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, #fde7d4 0%, transparent 40%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px;
+    user-select: none;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  header { text-align: center; padding: 18px 16px 12px; }
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 64px;
+    margin: 0;
+    color: var(--rose-deep);
+    letter-spacing: 1px;
+  }
+  .subtitle {
+    font-family: 'Caveat', cursive;
+    font-size: 32px;
+    color: var(--rose);
+    margin-top: -8px;
+  }
+
+  .goal-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 22px 28px;
+    margin: 16px 0 24px;
+    box-shadow: var(--shadow);
+    border: 2px dashed var(--rose);
+  }
+  .goal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .goal-name {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    color: var(--rose-deep);
+  }
+  .goal-price { font-size: 22px; font-weight: 700; color: var(--ink); }
+  .progress-track {
+    margin-top: 16px;
+    height: 26px;
+    background: var(--bg-deep);
+    border-radius: 13px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--gold) 100%);
+    border-radius: 13px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+  }
+  .countdown {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 18px;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .stat { flex: 1; min-width: 130px; }
+  .stat-value {
+    font-family: 'Caveat', cursive;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--rose-deep);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .section {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .section-title {
+    font-family: 'Caveat', cursive;
+    font-size: 38px;
+    color: var(--rose-deep);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+
+  .banner {
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 16px;
+    background: linear-gradient(90deg, #fff1c2, #ffd6e0);
+  }
+  .banner.complete {
+    background: linear-gradient(90deg, #d6f1d8, #e8f9d2);
+    color: #356a3e;
+  }
+  .banner.locked {
+    background: linear-gradient(90deg, #f3e8ee, #efe2e8);
+    color: var(--muted);
+  }
+
+  .chore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .chore {
+    background: var(--bg);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    min-height: 72px;
+    transition: all 0.2s ease;
+  }
+  .chore:active { transform: scale(0.97); }
+  .chore.done {
+    background: linear-gradient(90deg, #d6f1d8, #ecf8d4);
+    border-color: var(--good);
+  }
+  .chore.locked { opacity: 0.4; pointer-events: none; }
+  .chore-check {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--rose);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .chore.done .chore-check {
+    background: var(--good);
+    border-color: var(--good);
+  }
+  .chore-body { flex: 1; min-width: 0; }
+  .chore-name { font-weight: 700; font-size: 15px; line-height: 1.2; }
+  .chore-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .chore-price {
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--rose-deep);
+    flex-shrink: 0;
+  }
+
+  .empty-state {
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 15px;
+  }
+  .empty-state .big {
+    font-family: 'Caveat', cursive;
+    font-size: 28px;
+    color: var(--rose);
+    font-style: normal;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .payout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+  @media (max-width: 720px) { .payout { grid-template-columns: repeat(2, 1fr); } }
+  .payout-tile {
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .payout-tile .amount {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--rose-deep);
+    line-height: 1;
+  }
+  .payout-tile .label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+  }
+
+  .footer { text-align: center; color: var(--muted); font-size: 12px; padding: 16px 0; }
+  .sync-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--good);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .sync-dot.offline { background: #c9a23a; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--rose-deep);
+    color: white;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+
+  /* Emerald the cat — polaroid mascot */
+  .mascot {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin: 4px 0 18px;
+    flex-wrap: wrap;
+  }
+  .polaroid {
+    background: white;
+    padding: 10px 10px 34px;
+    box-shadow: 0 6px 22px rgba(180, 90, 120, 0.22);
+    border-radius: 4px;
+    transform: rotate(-3deg);
+    position: relative;
+    width: 180px;
+    transition: transform 0.3s ease;
+  }
+  .polaroid:nth-child(2) { transform: rotate(2deg); }
+  .polaroid:hover { transform: rotate(0); }
+  .polaroid img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+    border-radius: 2px;
+  }
+  .polaroid .caption {
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--rose-deep);
+  }
+
+  /* Photo-based chore icon (e.g. Feed Cat tile uses Emerald) */
+  .chore-check.with-photo {
+    padding: 0;
+    overflow: hidden;
+    background: white;
+    border-width: 3px;
+    width: 42px;
+    height: 42px;
+  }
+  .chore-check.with-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Emerald watermark on empty paid state */
+  .empty-state.with-cat {
+    background:
+      linear-gradient(135deg, rgba(253, 242, 245, 0.92), rgba(253, 242, 245, 0.92)),
+      var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .empty-state .cat-cameo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 4px 14px rgba(180, 90, 120, 0.25);
+    margin: 0 auto 10px;
+    display: block;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>👑 Kailey's Quest 👑</h1>
+    <div class="subtitle">Earn your Banwood Maxi Pink scooter</div>
+  </header>
+
+  <div class="mascot">
+    <div class="polaroid"><img id="emeraldPhoto1" alt="Emerald" /><div class="caption">Emerald 💖</div></div>
+    <div class="polaroid"><img id="emeraldPhoto2" alt="Emerald" /><div class="caption">cheering you on!</div></div>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-row">
+      <div class="goal-name">🛴 Banwood Maxi · Pink</div>
+      <div class="goal-price">$159.00</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+      <div class="progress-label" id="progressLabel">$0.00 of $159.00</div>
+    </div>
+    <div class="countdown">
+      <div class="stat"><div class="stat-value" id="daysLeft">—</div><div class="stat-label">Days to go</div></div>
+      <div class="stat"><div class="stat-value" id="todayPaid">$0.00</div><div class="stat-label">Earned today</div></div>
+      <div class="stat"><div class="stat-value" id="totalFund">$0.00</div><div class="stat-label">Scooter fund</div></div>
+      <div class="stat"><div class="stat-value" id="paidCount">0</div><div class="stat-label">Chores today</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🌅 Morning Routine</h2>
+    <div class="section-sub">Finish all 9 to unlock your first paid chore.</div>
+    <div class="banner" id="morningBanner">0 of 9 done</div>
+    <div class="chore-grid" id="morningGrid"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">☀️ Daytime Check-ins</h2>
+    <div class="section-sub">Finish these to unlock the rest of your paid chores.</div>
+    <div class="banner" id="daytimeBanner">0 of 4 done</div>
+    <div class="chore-grid" id="daytimeGrid"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">🌸 Paid Chores</h2>
+    <div class="section-sub">Bonus chores from Mom and Dad. Each has its own price.</div>
+    <div class="banner" id="paidBanner">Finish your morning routine first</div>
+    <div id="paidContainer"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">💰 Today's Money</h2>
+    <div class="section-sub">Auto-split. 10% tithing, 25% savings, 65% scooter.</div>
+    <div class="payout">
+      <div class="payout-tile"><div class="amount" id="payTotal">$0.00</div><div class="label">Earned today</div></div>
+      <div class="payout-tile"><div class="amount" id="payTithe">$0.00</div><div class="label">Tithing (10%)</div></div>
+      <div class="payout-tile"><div class="amount" id="paySavings">$0.00</div><div class="label">Savings (25%)</div></div>
+      <div class="payout-tile"><div class="amount" id="payScooter">$0.00</div><div class="label">Scooter (65%)</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="sync-dot" id="syncDot"></span>
+    <span id="syncStatus">Connecting…</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============= CONFIG =============
+  const CONFIG = {
+    kid: 'kailey',
+    hourlyRate: 8.00,
+    hoursPerDay: 2,
+    scooterName: 'Banwood Maxi · Pink',
+    scooterPrice: 159.00,
+    tithePct: 0.10,
+    savingsPct: 0.25,
+    supabaseUrl: 'https://gpumiccbztdqsszqplhf.supabase.co',
+    supabaseAnonKey: 'sb_publishable_y_qNcwejAfm2Ewexz_KsOQ_3JWX7AuM'
+  };
+
+  // 9-item morning routine — must all be done to unlock the FIRST paid chore
+  const MORNING = [
+    { id: 'morning-bathroom',  name: 'Use the bathroom',     icon: '🚽' },
+    { id: 'morning-brush',     name: 'Brush teeth',          icon: '🪥' },
+    { id: 'morning-prayers',   name: 'Morning prayers',      icon: '🙏' },
+    { id: 'morning-dressed',   name: 'Get dressed',          icon: '👗' },
+    { id: 'morning-breakfast', name: 'Eat breakfast',        icon: '🥞' },
+    { id: 'morning-scripture', name: 'Read scriptures',      icon: '📖' },
+    { id: 'morning-hair',      name: 'Do hair',              icon: '💁' },
+    { id: 'morning-exercise',  name: 'Exercise',             icon: '🏃' },
+    { id: 'morning-room',      name: 'Clean room',           icon: '🧸' }
+  ];
+
+  // 4-item daytime routine — unlocks the REST of the paid chores
+  const DAYTIME = [
+    { id: 'daytime-lunch',  name: 'Eat lunch',                          icon: '🍎' },
+    { id: 'daytime-pets',   name: 'Play with cat (15 min)',             icon: '🐱' },
+    { id: 'daytime-cat',    name: 'Feed Emerald',                       photo: './photos/emerald-3.jpg' },
+    { id: 'daytime-dishes', name: 'Put away clean dishes',              icon: '🍽️' }
+  ];
+
+  const EMERALD_PHOTOS = [
+    './photos/emerald-1.jpg',
+    './photos/emerald-2.jpg',
+    './photos/emerald-3.jpg',
+    './photos/emerald-4.jpg',
+    './photos/emerald-5.jpg'
+  ];
+
+  function pickEmerald(exclude) {
+    const choices = EMERALD_PHOTOS.filter(p => p !== exclude);
+    return choices[Math.floor(Math.random() * choices.length)];
+  }
+
+  function setMascotPhotos() {
+    const first = EMERALD_PHOTOS[Math.floor(Math.random() * EMERALD_PHOTOS.length)];
+    const second = pickEmerald(first);
+    const p1 = document.getElementById('emeraldPhoto1');
+    const p2 = document.getElementById('emeraldPhoto2');
+    if (p1) p1.src = first;
+    if (p2) p2.src = second;
+  }
+
+  // ============= STATE =============
+  let todayKey = isoDate(new Date());
+  let todayLog = [];
+  let allLog = [];
+  let menu = [];          // bonus chores from chore_menu (parent-issued via iMessage)
+  let approvals = [];     // unlock_approvals rows for today
+  let approvalInFlight = {};
+  let isReady = false;
+
+  // ============= SUPABASE REST HELPERS (no JS client — plain fetch) =============
+  const SB_BASE = CONFIG.supabaseUrl + '/rest/v1';
+  const SB_AUTH = {
+    apikey: CONFIG.supabaseAnonKey,
+    Authorization: `Bearer ${CONFIG.supabaseAnonKey}`
+  };
+  async function sbGet(path) {
+    const r = await fetch(`${SB_BASE}/${path}`, { headers: SB_AUTH });
+    if (!r.ok) throw new Error(`GET ${path} ${r.status}: ${await r.text()}`);
+    return r.json();
+  }
+  async function sbPost(path, body, extraPrefer = '') {
+    const headers = { ...SB_AUTH, 'Content-Type': 'application/json',
+      Prefer: 'return=representation' + (extraPrefer ? ',' + extraPrefer : '') };
+    const r = await fetch(`${SB_BASE}/${path}`, { method: 'POST', headers, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(`POST ${path} ${r.status}: ${await r.text()}`);
+    const data = await r.json();
+    return Array.isArray(data) ? data[0] : data;
+  }
+  async function sbDelete(path) {
+    const r = await fetch(`${SB_BASE}/${path}`, { method: 'DELETE', headers: SB_AUTH });
+    if (!r.ok) throw new Error(`DELETE ${path} ${r.status}: ${await r.text()}`);
+  }
+
+  // The "day" rolls over at 10pm local time, not midnight — gives the kids a
+  // fresh slate the night before so the next morning starts clean. We shift
+  // the input by +2 hours so any time at/after 10pm gets the NEXT day's date.
+  function isoDate(d) {
+    const shifted = new Date(d.getTime() + 2 * 60 * 60 * 1000);
+    const y = shifted.getFullYear();
+    const m = String(shifted.getMonth() + 1).padStart(2, '0');
+    const day = String(shifted.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+  function fmtMoney(n) { return '$' + n.toFixed(2); }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  function setSync(state, text) {
+    document.getElementById('syncDot').classList.toggle('offline', state !== 'ok');
+    document.getElementById('syncStatus').textContent = text;
+  }
+
+  // ============= RENDER =============
+  function renderRoutineChore(chore, gridId) {
+    const grid = document.getElementById(gridId);
+    const div = document.createElement('div');
+    div.className = 'chore';
+    div.dataset.id = chore.id;
+    const checkInner = chore.photo
+      ? `<div class="chore-check with-photo"><img src="${chore.photo}" alt="${chore.name}" /></div>`
+      : `<div class="chore-check">${chore.icon || ''}</div>`;
+    div.innerHTML = `
+      ${checkInner}
+      <div class="chore-body">
+        <div class="chore-name">${chore.name}</div>
+        <div class="chore-meta">required</div>
+      </div>
+    `;
+    div.addEventListener('click', () => toggleRoutine(chore, div));
+    grid.appendChild(div);
+  }
+
+  function renderRoutines() {
+    MORNING.forEach(c => renderRoutineChore(c, 'morningGrid'));
+    DAYTIME.forEach(c => renderRoutineChore(c, 'daytimeGrid'));
+  }
+
+  function renderPaid() {
+    const container = document.getElementById('paidContainer');
+    container.innerHTML = '';
+    if (menu.length === 0) {
+      const div = document.createElement('div');
+      div.className = 'empty-state with-cat';
+      const cameo = EMERALD_PHOTOS[Math.floor(Math.random() * EMERALD_PHOTOS.length)];
+      div.innerHTML = `
+        <img class="cat-cameo" src="${cameo}" alt="Emerald" />
+        <span class="big">Emerald is waiting 💌</span>
+        Ask Mom or Dad to text some chores — they'll show up here right away.
+      `;
+      container.appendChild(div);
+      return;
+    }
+    const grid = document.createElement('div');
+    grid.className = 'chore-grid';
+    menu.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'chore';
+      div.dataset.menuId = m.id;
+      const price = (m.price_cents / 100).toFixed(2);
+      div.innerHTML = `
+        <div class="chore-check">✨</div>
+        <div class="chore-body">
+          <div class="chore-name">${m.name}</div>
+          <div class="chore-meta">Bonus chore</div>
+        </div>
+        <div class="chore-price">$${price}</div>
+      `;
+      div.addEventListener('click', () => togglePaid(m, div));
+      grid.appendChild(div);
+    });
+    container.appendChild(grid);
+  }
+
+  async function requestApproval(stage) {
+    if (approvalInFlight[stage]) return;
+    if (approvals.find(a => a.stage === stage)) return;
+    approvalInFlight[stage] = true;
+    try {
+      const row = { kid: CONFIG.kid, approval_date: todayKey, stage, status: 'pending' };
+      const data = await sbPost('unlock_approvals?on_conflict=kid,approval_date,stage', row, 'resolution=ignore-duplicates');
+      if (data) approvals.push(data);
+    } catch (e) { console.error('approval request failed', e); }
+    finally { approvalInFlight[stage] = false; }
+  }
+
+  function refreshUI() {
+    const todayRoutine = todayLog.filter(r => r.is_baseline);
+    const todayPaid    = todayLog.filter(r => !r.is_baseline);
+
+    const morningCount = MORNING.filter(c => todayRoutine.some(r => r.chore_id === c.id)).length;
+    const daytimeCount = DAYTIME.filter(c => todayRoutine.some(r => r.chore_id === c.id)).length;
+    const morningDone  = morningCount === MORNING.length;
+    const daytimeDone  = daytimeCount === DAYTIME.length;
+    const paidDoneCount = todayPaid.length;
+
+    const morningAppr = approvals.find(a => a.stage === 'morning');
+    const daytimeAppr = approvals.find(a => a.stage === 'daytime');
+    const morningApproved = morningAppr?.status === 'approved';
+    const daytimeApproved = daytimeAppr?.status === 'approved';
+    const morningDenied   = morningAppr?.status === 'denied';
+    const daytimeDenied   = daytimeAppr?.status === 'denied';
+
+    // Trigger parent-approval requests when routines complete
+    if (morningDone && !morningAppr) requestApproval('morning');
+    if (morningApproved && daytimeDone && !daytimeAppr) requestApproval('daytime');
+
+    MORNING.forEach(c => {
+      const el = document.querySelector(`#morningGrid .chore[data-id="${c.id}"]`);
+      if (el) el.classList.toggle('done', todayRoutine.some(r => r.chore_id === c.id));
+    });
+    DAYTIME.forEach(c => {
+      const el = document.querySelector(`#daytimeGrid .chore[data-id="${c.id}"]`);
+      if (el) el.classList.toggle('done', todayRoutine.some(r => r.chore_id === c.id));
+    });
+
+    const mb = document.getElementById('morningBanner');
+    if (morningApproved) {
+      mb.className = 'banner complete';
+      mb.textContent = '🎉 Mom or Dad approved! First paid chore unlocked.';
+    } else if (morningDenied) {
+      mb.className = 'banner locked';
+      mb.textContent = '💌 Mom or Dad asked you to wait — talk to them first.';
+    } else if (morningDone && morningAppr) {
+      mb.className = 'banner';
+      mb.textContent = '📨 Sent to Mom & Dad — waiting for approval…';
+    } else if (morningDone) {
+      mb.className = 'banner';
+      mb.textContent = '🌷 Morning routine complete! Sending to Mom & Dad…';
+    } else {
+      mb.className = 'banner';
+      mb.textContent = `${morningCount} of ${MORNING.length} done · finish all to ask Mom & Dad to unlock`;
+    }
+
+    const db = document.getElementById('daytimeBanner');
+    if (daytimeApproved) {
+      db.className = 'banner complete';
+      db.textContent = '✨ Mom or Dad approved! Every paid chore is unlocked.';
+    } else if (daytimeDenied) {
+      db.className = 'banner locked';
+      db.textContent = '💌 Mom or Dad asked you to wait — talk to them first.';
+    } else if (daytimeDone && daytimeAppr) {
+      db.className = 'banner';
+      db.textContent = '📨 Sent to Mom & Dad — waiting for approval…';
+    } else if (daytimeDone) {
+      db.className = 'banner';
+      db.textContent = '🌷 Daytime check-ins done! Sending to Mom & Dad…';
+    } else if (!morningApproved) {
+      db.className = 'banner locked';
+      db.textContent = `${daytimeCount} of ${DAYTIME.length} done · approved morning unlocks this step`;
+    } else {
+      db.className = 'banner';
+      db.textContent = `${daytimeCount} of ${DAYTIME.length} done · finish all to ask Mom & Dad for the rest`;
+    }
+
+    const pb = document.getElementById('paidBanner');
+    if (!morningDone) {
+      pb.className = 'banner locked';
+      pb.textContent = '🔒 Finish your morning routine to ask Mom & Dad to unlock';
+    } else if (!morningApproved && !morningDenied) {
+      pb.className = 'banner';
+      pb.textContent = '⏳ Waiting for Mom or Dad to approve your morning…';
+    } else if (morningDenied) {
+      pb.className = 'banner locked';
+      pb.textContent = '🚫 Mom or Dad asked you to wait — ask them what to do';
+    } else if (!daytimeApproved) {
+      pb.className = 'banner';
+      pb.textContent = paidDoneCount === 0
+        ? '⭐ Pick your first paid chore — the rest unlock after daytime + approval'
+        : `⭐ Great work! Finish daytime check-ins to ask for more (${paidDoneCount} done)`;
+    } else {
+      pb.className = 'banner complete';
+      pb.textContent = '🌟 All paid chores unlocked — keep going!';
+    }
+
+    menu.forEach(m => {
+      const el = document.querySelector(`.chore[data-menu-id="${m.id}"]`);
+      if (!el) return;
+      const alreadyDone = todayPaid.some(r => r.menu_id === m.id);
+      el.classList.toggle('done', alreadyDone);
+      const locked = !morningApproved
+        || (!daytimeApproved && paidDoneCount >= 1 && !alreadyDone);
+      el.classList.toggle('locked', locked);
+    });
+
+    // Earnings (today and all-time)
+    const todayCents = todayPaid.reduce((s, r) => s + (r.price_cents || 0), 0);
+    const todayEarned = todayCents / 100;
+    const tithe   = todayEarned * CONFIG.tithePct;
+    const savings = todayEarned * CONFIG.savingsPct;
+    const scoot   = todayEarned - tithe - savings;
+
+    document.getElementById('todayPaid').textContent = fmtMoney(todayEarned);
+    document.getElementById('paidCount').textContent = paidDoneCount;
+    document.getElementById('payTotal').textContent = fmtMoney(todayEarned);
+    document.getElementById('payTithe').textContent = fmtMoney(tithe);
+    document.getElementById('paySavings').textContent = fmtMoney(savings);
+    document.getElementById('payScooter').textContent = fmtMoney(scoot);
+
+    const allCents = allLog.filter(r => !r.is_baseline).reduce((s, r) => s + (r.price_cents || 0), 0);
+    const allEarned = allCents / 100;
+    const totalScooter = allEarned * (1 - CONFIG.tithePct - CONFIG.savingsPct);
+
+    document.getElementById('totalFund').textContent = fmtMoney(totalScooter);
+    const pct = Math.min(100, (totalScooter / CONFIG.scooterPrice) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent =
+      `${fmtMoney(totalScooter)} of ${fmtMoney(CONFIG.scooterPrice)} · ${pct.toFixed(0)}%`;
+
+    const dailySpendable = CONFIG.hourlyRate * CONFIG.hoursPerDay * (1 - CONFIG.tithePct - CONFIG.savingsPct);
+    const remaining = CONFIG.scooterPrice - totalScooter;
+    const daysLeft = Math.max(0, Math.ceil(remaining / dailySpendable));
+    document.getElementById('daysLeft').textContent = remaining <= 0 ? '🎉' : daysLeft;
+  }
+
+  // ============= ACTIONS =============
+  async function toggleRoutine(chore) {
+    if (!isReady) { toast('Still loading… try again in a sec'); return; }
+    const existing = todayLog.find(r => r.chore_id === chore.id && r.is_baseline);
+    try {
+      if (existing) {
+        await sbDelete(`chore_log?id=eq.${existing.id}`);
+        todayLog = todayLog.filter(r => r.id !== existing.id);
+        allLog   = allLog.filter(r => r.id !== existing.id);
+        toast('Undone');
+      } else {
+        const data = await sbPost('chore_log', {
+          kid: CONFIG.kid, log_date: todayKey, chore_id: chore.id,
+          chore_name: chore.name, is_baseline: true, minutes: 0
+        });
+        todayLog.push(data); allLog.push(data);
+        toast('✓ Done!');
+      }
+    } catch (e) { console.error(e); toast('Could not save 😢'); return; }
+    refreshUI();
+  }
+
+  async function togglePaid(menuItem) {
+    if (!isReady) { toast('Still loading… try again in a sec'); return; }
+    const existing = todayLog.find(r => !r.is_baseline && r.menu_id === menuItem.id);
+    try {
+      if (existing) {
+        await sbDelete(`chore_log?id=eq.${existing.id}`);
+        todayLog = todayLog.filter(r => r.id !== existing.id);
+        allLog   = allLog.filter(r => r.id !== existing.id);
+        toast('Undone');
+      } else {
+        const data = await sbPost('chore_log', {
+          kid: CONFIG.kid, log_date: todayKey, chore_id: `menu-${menuItem.id}`,
+          chore_name: menuItem.name, is_baseline: false, minutes: 0,
+          price_cents: menuItem.price_cents
+        });
+        data.menu_id = menuItem.id;
+        todayLog.push(data); allLog.push(data);
+        toast(`+$${(menuItem.price_cents / 100).toFixed(2)} earned!`);
+      }
+    } catch (e) { console.error(e); toast('Could not save 😢'); return; }
+    refreshUI();
+  }
+
+  // ============= INIT =============
+  function tagMenuIds(rows) {
+    // chore_log rows store the menu link in chore_id as "menu-<uuid>"; lift to .menu_id for quick lookup
+    rows.forEach(r => {
+      if (!r.is_baseline && typeof r.chore_id === 'string' && r.chore_id.startsWith('menu-')) {
+        r.menu_id = r.chore_id.slice(5);
+      }
+    });
+    return rows;
+  }
+
+  async function fetchAll() {
+    const [logData, menuData, apprData] = await Promise.all([
+      sbGet(`chore_log?select=*&kid=eq.${CONFIG.kid}&order=completed_at.asc`),
+      sbGet(`chore_menu?select=*&kid=eq.${CONFIG.kid}&active=eq.true&order=created_at.asc`),
+      sbGet(`unlock_approvals?select=*&kid=eq.${CONFIG.kid}&approval_date=eq.${todayKey}`)
+    ]);
+    allLog    = tagMenuIds(logData);
+    todayLog  = allLog.filter(r => r.log_date === todayKey);
+    menu      = menuData;
+    approvals = apprData;
+  }
+
+  async function init() {
+    setSync('ok', 'Loading…');
+    try {
+      await fetchAll();
+      renderPaid();
+      refreshUI();
+      isReady = true;
+      setSync('ok', `Synced · ${new Date().toLocaleTimeString()}`);
+
+      // Poll every 5s for parent approvals + new bonus chores from iMessage
+      setInterval(async () => {
+        try {
+          await fetchAll();
+          renderPaid();
+          refreshUI();
+          setSync('ok', `Synced · ${new Date().toLocaleTimeString()}`);
+        } catch (e) {
+          setSync('err', 'Sync paused — retrying');
+        }
+      }, 5000);
+    } catch (e) {
+      console.error(e);
+      setSync('err', 'Offline — ' + (e.message || e));
+    }
+  }
+
+  setInterval(() => {
+    const newKey = isoDate(new Date());
+    if (newKey !== todayKey) {
+      todayKey = newKey;
+      todayLog = allLog.filter(r => r.log_date === todayKey);
+      refreshUI();
+    }
+  }, 60_000);
+
+  setMascotPhotos();
+  renderRoutines();
+  renderPaid();
+  init();
+</script>
+</body>
+</html>
