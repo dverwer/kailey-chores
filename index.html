@@ -181,6 +181,21 @@
     background: linear-gradient(90deg, #d6f1d8, #ecf8d4);
     border-color: var(--good);
   }
+  .chore.pending {
+    background: linear-gradient(90deg, #fff1c2, #fde7d4);
+    border-color: var(--gold);
+  }
+  .chore.pending .chore-check {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: white;
+  }
+  .chore.pending .chore-check::before {
+    content: '⏳';
+    font-size: 18px;
+  }
+  .chore.pending .chore-check img,
+  .chore.pending .chore-check > :not(::before) { display: none; }
   .chore.locked { opacity: 0.4; pointer-events: none; }
   .chore-check {
     width: 36px;
@@ -707,15 +722,18 @@
     menu.forEach(m => {
       const el = document.querySelector(`.chore[data-menu-id="${m.id}"]`);
       if (!el) return;
-      const alreadyDone = todayPaid.some(r => r.menu_id === m.id);
-      el.classList.toggle('done', alreadyDone);
+      const row = todayPaid.find(r => r.menu_id === m.id);
+      const isPending = !!(row && row.pending);
+      const isDone    = !!(row && !row.pending);
+      el.classList.toggle('done', isDone);
+      el.classList.toggle('pending', isPending);
       const locked = !morningApproved
-        || (!daytimeApproved && paidDoneCount >= 1 && !alreadyDone);
+        || (!daytimeApproved && paidDoneCount >= 1 && !row);
       el.classList.toggle('locked', locked);
     });
 
-    // Earnings (today and all-time)
-    const todayCents = todayPaid.reduce((s, r) => s + (r.price_cents || 0), 0);
+    // Earnings (only CONFIRMED chores count; pending ones don't allocate $ yet)
+    const todayCents = todayPaid.reduce((s, r) => s + (r.pending ? 0 : (r.price_cents || 0)), 0);
     const todayEarned = todayCents / 100;
     const tithe   = todayEarned * CONFIG.tithePct;
     const savings = todayEarned * CONFIG.savingsPct;
@@ -728,7 +746,7 @@
     document.getElementById('paySavings').textContent = fmtMoney(savings);
     document.getElementById('payScooter').textContent = fmtMoney(scoot);
 
-    const allCents = allLog.filter(r => !r.is_baseline).reduce((s, r) => s + (r.price_cents || 0), 0);
+    const allCents = allLog.filter(r => !r.is_baseline && !r.pending).reduce((s, r) => s + (r.price_cents || 0), 0);
     const allEarned = allCents / 100;
     const totalScooter = allEarned * (1 - CONFIG.tithePct - CONFIG.savingsPct);
 
@@ -774,16 +792,18 @@
         await sbDelete(`chore_log?id=eq.${existing.id}`);
         todayLog = todayLog.filter(r => r.id !== existing.id);
         allLog   = allLog.filter(r => r.id !== existing.id);
-        toast('Undone');
+        toast(existing.pending ? 'Cancelled request' : 'Undone');
       } else {
         const data = await sbPost('chore_log', {
-          kid: CONFIG.kid, log_date: todayKey, chore_id: `menu-${menuItem.id}`,
+          kid: CONFIG.kid, log_date: todayKey,
+          chore_id: `pending-menu-${menuItem.id}`,   // pending until Mom or Dad confirm
           chore_name: menuItem.name, is_baseline: false, minutes: 0,
           price_cents: menuItem.price_cents
         });
         data.menu_id = menuItem.id;
+        data.pending = true;
         todayLog.push(data); allLog.push(data);
-        toast(`+$${(menuItem.price_cents / 100).toFixed(2)} earned!`);
+        toast('📨 Sent to Mom & Dad for approval!');
       }
     } catch (e) { console.error(e); toast('Could not save 😢'); return; }
     refreshUI();
@@ -791,10 +811,17 @@
 
   // ============= INIT =============
   function tagMenuIds(rows) {
-    // chore_log rows store the menu link in chore_id as "menu-<uuid>"; lift to .menu_id for quick lookup
+    // chore_log rows reference a menu item via chore_id. Two states:
+    //   "pending-menu-<uuid>"  → awaiting parent confirmation (no money yet)
+    //   "menu-<uuid>"          → approved by parent (counts toward earnings)
     rows.forEach(r => {
-      if (!r.is_baseline && typeof r.chore_id === 'string' && r.chore_id.startsWith('menu-')) {
-        r.menu_id = r.chore_id.slice(5);
+      if (r.is_baseline || typeof r.chore_id !== 'string') return;
+      if (r.chore_id.startsWith('pending-menu-')) {
+        r.menu_id = r.chore_id.slice('pending-menu-'.length);
+        r.pending = true;
+      } else if (r.chore_id.startsWith('menu-')) {
+        r.menu_id = r.chore_id.slice('menu-'.length);
+        r.pending = false;
       }
     });
     return rows;
