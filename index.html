@@ -239,6 +239,21 @@
     color: var(--rose-deep);
     flex-shrink: 0;
   }
+  /* Reward tiles — same layout but signal "spend" with purple accent */
+  .chore.reward {
+    background: linear-gradient(135deg, #f6e8ff, #fdeaf3);
+  }
+  .chore.reward .chore-check { border-color: #a78bfa; }
+  .chore.reward .chore-price {
+    color: #7c3aed;
+  }
+  .chore.reward .chore-price::before { content: '−'; }
+  .chore-count {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
 
   .empty-state {
     background: var(--bg);
@@ -440,6 +455,12 @@
   </div>
 
   <div class="section">
+    <h2 class="section-title">🛍️ Things to Buy</h2>
+    <div class="section-sub">Spend from your scooter fund. Each one needs Mom or Dad approval — they'll get a text when you tap.</div>
+    <div class="chore-grid" id="rewardGrid"></div>
+  </div>
+
+  <div class="section">
     <h2 class="section-title">💰 Today's Money</h2>
     <div class="section-sub">Auto-split. 10% tithing, 25% savings, 65% scooter.</div>
     <div class="payout">
@@ -486,12 +507,22 @@
     { id: 'morning-room',      name: 'Clean room',           icon: '🧸' }
   ];
 
-  // 4-item daytime routine — unlocks the REST of the paid chores
+  // 5-item daytime routine — unlocks the REST of the paid chores
   const DAYTIME = [
-    { id: 'daytime-lunch',  name: 'Eat lunch',                          icon: '🍎' },
-    { id: 'daytime-pets',   name: 'Play with cat (15 min)',             icon: '🐱' },
-    { id: 'daytime-cat',    name: 'Feed Emerald',                       photo: './photos/emerald-3.jpg' },
-    { id: 'daytime-dishes', name: 'Put away clean dishes',              icon: '🍽️' }
+    { id: 'daytime-lunch',         name: 'Eat lunch',                   icon: '🍎' },
+    { id: 'daytime-pets',          name: 'Play with cat (15 min)',      icon: '🐱' },
+    { id: 'daytime-cat',           name: 'Feed Emerald',                photo: './photos/emerald-3.jpg' },
+    { id: 'daytime-dishes',        name: 'Put away clean dishes',       icon: '🍽️' },
+    { id: 'daytime-clear-dinner',  name: 'Clear dishes from dinner',    icon: '🍴' }
+  ];
+
+  // Things Kailey can buy with her earnings. Tap → parent approval → deducted from scooter fund.
+  const REWARDS = [
+    { id: 'tv30',     name: '30 min TV Time',   price_cents: 300,  icon: '📺' },
+    { id: 'qt',       name: 'QT Trip',          price_cents: 1000, icon: '🥤' },
+    { id: 'tramp',    name: 'Trampoline Park',  price_cents: 1500, icon: '🤸' },
+    { id: 'ipad30',   name: '30 min iPad Time', price_cents: 300,  icon: '🎮' },
+    { id: 'shopping', name: 'Shopping Outing',  price_cents: 2000, icon: '🛍️' }
   ];
 
   const EMERALD_PHOTOS = [
@@ -597,6 +628,27 @@
   function renderRoutines() {
     MORNING.forEach(c => renderRoutineChore(c, 'morningGrid'));
     DAYTIME.forEach(c => renderRoutineChore(c, 'daytimeGrid'));
+  }
+
+  function renderRewards() {
+    const container = document.getElementById('rewardGrid');
+    container.innerHTML = '';
+    REWARDS.forEach(r => {
+      const div = document.createElement('div');
+      div.className = 'chore reward';
+      div.dataset.rewardId = r.id;
+      const price = (r.price_cents / 100).toFixed(2);
+      div.innerHTML = `
+        <div class="chore-check">${r.icon}</div>
+        <div class="chore-body">
+          <div class="chore-name">${r.name}</div>
+          <div class="chore-count" data-count></div>
+        </div>
+        <div class="chore-price">$${price}</div>
+      `;
+      div.addEventListener('click', () => toggleReward(r));
+      container.appendChild(div);
+    });
   }
 
   function renderPaid() {
@@ -739,7 +791,7 @@
     menu.forEach(m => {
       const el = document.querySelector(`.chore[data-menu-id="${m.id}"]`);
       if (!el) return;
-      const row = todayPaid.find(r => r.menu_id === m.id);
+      const row = todayPaid.find(r => r.menu_id === m.id && !r.is_reward);
       const isPending = !!(row && row.pending);
       const isDone    = !!(row && !row.pending);
       el.classList.toggle('done', isDone);
@@ -749,8 +801,21 @@
       el.classList.toggle('locked', locked);
     });
 
-    // Earnings (only CONFIRMED chores count; pending ones don't allocate $ yet)
-    const todayCents = todayPaid.reduce((s, r) => s + (r.pending ? 0 : (r.price_cents || 0)), 0);
+    // Reward tiles — show pending state + count of approved purchases today
+    REWARDS.forEach(r => {
+      const el = document.querySelector(`.chore[data-reward-id="${r.id}"]`);
+      if (!el) return;
+      const hasPending = todayLog.some(x => x.reward_id === r.id && x.pending);
+      const todayApprovedCount = todayLog.filter(x => x.reward_id === r.id && !x.pending).length;
+      el.classList.toggle('pending', hasPending);
+      const countEl = el.querySelector('[data-count]');
+      if (countEl) countEl.textContent = todayApprovedCount > 0 ? `bought ${todayApprovedCount} today` : '';
+    });
+
+    // Earnings — only CONFIRMED paid chores count; rewards are tracked separately below
+    const todayCents = todayPaid
+      .filter(r => !r.is_reward)
+      .reduce((s, r) => s + (r.pending ? 0 : (r.price_cents || 0)), 0);
     const todayEarned = todayCents / 100;
     const tithe   = todayEarned * CONFIG.tithePct;
     const savings = todayEarned * CONFIG.savingsPct;
@@ -763,9 +828,15 @@
     document.getElementById('paySavings').textContent = fmtMoney(savings);
     document.getElementById('payScooter').textContent = fmtMoney(scoot);
 
-    const allCents = allLog.filter(r => !r.is_baseline && !r.pending).reduce((s, r) => s + (r.price_cents || 0), 0);
-    const allEarned = allCents / 100;
-    const totalScooter = allEarned * (1 - CONFIG.tithePct - CONFIG.savingsPct);
+    // All-time scooter fund: earned × 0.65 minus confirmed reward purchases
+    const allEarnedCents = allLog
+      .filter(r => !r.is_baseline && !r.pending && !r.is_reward)
+      .reduce((s, r) => s + (r.price_cents || 0), 0);
+    const allSpentCents = allLog
+      .filter(r => r.is_reward && !r.pending)
+      .reduce((s, r) => s + (r.price_cents || 0), 0);
+    const allEarned = allEarnedCents / 100;
+    const totalScooter = allEarned * (1 - CONFIG.tithePct - CONFIG.savingsPct) - (allSpentCents / 100);
 
     document.getElementById('totalFund').textContent = fmtMoney(totalScooter);
     const pct = Math.min(100, (totalScooter / CONFIG.scooterPrice) * 100);
@@ -801,6 +872,27 @@
     refreshUI();
   }
 
+  async function toggleReward(reward) {
+    if (!isReady) { toast('Still loading… try again in a sec'); return; }
+    // Block double-tap while a request is already in flight
+    const pending = todayLog.find(r => r.reward_id === reward.id && r.pending);
+    if (pending) { toast('Already waiting on Mom & Dad'); return; }
+    try {
+      const data = await sbPost('chore_log', {
+        kid: CONFIG.kid, log_date: todayKey,
+        chore_id: `pending-reward-${reward.id}`,
+        chore_name: reward.name, is_baseline: false, minutes: 0,
+        price_cents: reward.price_cents
+      });
+      data.reward_id = reward.id;
+      data.pending = true;
+      data.is_reward = true;
+      todayLog.push(data); allLog.push(data);
+      toast('📨 Sent to Mom & Dad for approval!');
+    } catch (e) { console.error(e); toast('Could not save 😢'); return; }
+    refreshUI();
+  }
+
   async function togglePaid(menuItem) {
     if (!isReady) { toast('Still loading… try again in a sec'); return; }
     const existing = todayLog.find(r => !r.is_baseline && r.menu_id === menuItem.id);
@@ -828,9 +920,11 @@
 
   // ============= INIT =============
   function tagMenuIds(rows) {
-    // chore_log rows reference a menu item via chore_id. Two states:
-    //   "pending-menu-<uuid>"  → awaiting parent confirmation (no money yet)
-    //   "menu-<uuid>"          → approved by parent (counts toward earnings)
+    // chore_id prefix encodes the row type + approval state:
+    //   pending-menu-<uuid>    → paid chore awaiting parent approval
+    //   menu-<uuid>            → paid chore approved (counts toward earnings)
+    //   pending-reward-<id>    → reward purchase awaiting parent approval
+    //   reward-<id>            → reward purchase approved (deducts from scooter fund)
     rows.forEach(r => {
       if (r.is_baseline || typeof r.chore_id !== 'string') return;
       if (r.chore_id.startsWith('pending-menu-')) {
@@ -838,6 +932,20 @@
         r.pending = true;
       } else if (r.chore_id.startsWith('menu-')) {
         r.menu_id = r.chore_id.slice('menu-'.length);
+        r.pending = false;
+      } else if (r.chore_id.startsWith('pending-reward-')) {
+        r.reward_id = r.chore_id.slice('pending-reward-'.length);
+        r.pending = true;
+        r.is_reward = true;
+      } else if (r.chore_id.startsWith('reward-')) {
+        r.reward_id = r.chore_id.slice('reward-'.length);
+        r.pending = false;
+        r.is_reward = true;
+      } else if (r.chore_id.startsWith('penalty-')) {
+        // Parent-issued penalty (via iMessage). Same effect as a reward purchase:
+        // subtracts from scooter fund. No approval needed — parent already decided.
+        r.is_reward = true;
+        r.is_penalty = true;
         r.pending = false;
       }
     });
@@ -893,6 +1001,7 @@
 
   setMascotPhotos();
   renderRoutines();
+  renderRewards();
   renderPaid();
   init();
 </script>
