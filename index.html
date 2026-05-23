@@ -277,7 +277,7 @@
 
   .payout {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 12px;
     margin-top: 4px;
   }
@@ -295,6 +295,8 @@
     color: var(--rose-deep);
     line-height: 1;
   }
+  .payout-tile.spent .amount { color: #7c3aed; }
+  .payout-tile.spent .amount::before { content: '−'; }
   .payout-tile .label {
     font-size: 12px;
     color: var(--muted);
@@ -470,6 +472,7 @@
       <div class="payout-tile"><div class="amount" id="payTithe">$0.00</div><div class="label">Tithing (10%)</div></div>
       <div class="payout-tile"><div class="amount" id="paySavings">$0.00</div><div class="label">Savings (25%)</div></div>
       <div class="payout-tile"><div class="amount" id="payScooter">$0.00</div><div class="label">Scooter (65%)</div></div>
+      <div class="payout-tile spent"><div class="amount" id="paySpent">$0.00</div><div class="label">Spent today</div></div>
     </div>
   </div>
 
@@ -818,7 +821,11 @@
     const todayCents = todayPaid
       .filter(r => !r.is_reward)
       .reduce((s, r) => s + (r.pending ? 0 : (r.price_cents || 0)), 0);
+    const todaySpentCents = todayPaid
+      .filter(r => r.is_reward && !r.pending)
+      .reduce((s, r) => s + (r.price_cents || 0), 0);
     const todayEarned = todayCents / 100;
+    const todaySpent  = todaySpentCents / 100;
     const tithe   = todayEarned * CONFIG.tithePct;
     const savings = todayEarned * CONFIG.savingsPct;
     const scoot   = todayEarned - tithe - savings;
@@ -829,6 +836,7 @@
     document.getElementById('payTithe').textContent = fmtMoney(tithe);
     document.getElementById('paySavings').textContent = fmtMoney(savings);
     document.getElementById('payScooter').textContent = fmtMoney(scoot);
+    document.getElementById('paySpent').textContent = fmtMoney(todaySpent);
 
     // All-time scooter fund: earned × 0.65 minus confirmed reward purchases
     const allEarnedCents = allLog
