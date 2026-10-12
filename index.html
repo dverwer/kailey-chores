@@ -3,30 +3,27 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Kailey's Scooter Quest 👑</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<title>Kailey's Galaxy Quest 🌌</title>
 <style>
   :root {
-    --bg:        #fdf2f5;
-    --bg-deep:   #f9dee4;
-    --card:      #fffafc;
-    --rose:      #d97a92;
-    --rose-deep: #b85978;
-    --gold:      #d4a373;
-    --ink:       #4a2a35;
-    --muted:     #93697a;
-    --good:      #6fb27c;
-    --shadow:    0 6px 18px rgba(180, 90, 120, 0.12);
+    --bg:        #14092b;
+    --bg-deep:   #241145;
+    --card:      #221243;
+    --rose:      #e879f9;
+    --rose-deep: #f0abfc;
+    --gold:      #22d3ee;
+    --ink:       #f3efff;
+    --muted:     #a79fd6;
+    --good:      #4ade80;
+    --shadow:    0 6px 18px rgba(0, 0, 0, 0.5);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
   body {
-    font-family: 'Quicksand', system-ui, sans-serif;
+    font-family: 'Trebuchet MS', Verdana, system-ui, sans-serif;
     background:
-      radial-gradient(circle at 20% 10%, #fbe2ea 0%, transparent 40%),
-      radial-gradient(circle at 80% 90%, #fde7d4 0%, transparent 40%),
+      radial-gradient(circle at 20% 10%, rgba(232,121,249,.22) 0%, transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(34,211,238,.16) 0%, transparent 40%),
       var(--bg);
     color: var(--ink);
     min-height: 100vh;
@@ -37,7 +34,7 @@
 
   header { text-align: center; padding: 18px 16px 12px; }
   h1 {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-weight: 700;
     font-size: 64px;
     margin: 0;
@@ -45,7 +42,7 @@
     letter-spacing: 1px;
   }
   .subtitle {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 32px;
     color: var(--rose);
     margin-top: -8px;
@@ -67,7 +64,7 @@
     gap: 12px;
   }
   .goal-name {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 36px;
     color: var(--rose-deep);
   }
@@ -108,7 +105,7 @@
   }
   .stat { flex: 1; min-width: 130px; }
   .stat-value {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 44px;
     font-weight: 700;
     color: var(--rose-deep);
@@ -130,7 +127,7 @@
     box-shadow: var(--shadow);
   }
   .section-title {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 38px;
     color: var(--rose-deep);
     margin: 0 0 4px;
@@ -148,14 +145,14 @@
     font-weight: 700;
     color: var(--ink);
     font-size: 16px;
-    background: linear-gradient(90deg, #fff1c2, #ffd6e0);
+    background: linear-gradient(90deg, #4c1d95, #831843);
   }
   .banner.complete {
-    background: linear-gradient(90deg, #d6f1d8, #e8f9d2);
-    color: #356a3e;
+    background: linear-gradient(90deg, #14532d, #166534);
+    color: #bbf7d0;
   }
   .banner.locked {
-    background: linear-gradient(90deg, #f3e8ee, #efe2e8);
+    background: linear-gradient(90deg, #2a1b4d, #241145);
     color: var(--muted);
   }
 
@@ -180,11 +177,11 @@
   .chore:has(.chore-price) { padding-bottom: 22px; }
   .chore:active { transform: scale(0.97); }
   .chore.done {
-    background: linear-gradient(90deg, #d6f1d8, #ecf8d4);
+    background: linear-gradient(90deg, #14532d, #1a6b3c);
     border-color: var(--good);
   }
   .chore.pending {
-    background: linear-gradient(90deg, #fff1c2, #fde7d4);
+    background: linear-gradient(90deg, #713f12, #7c2d12);
     border-color: var(--gold);
   }
   .chore.locked { opacity: 0.4; pointer-events: none; }
@@ -193,7 +190,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: white;
+    background: #2d1b57;
     border: 3px solid var(--rose);
     display: flex;
     align-items: center;
@@ -251,7 +248,7 @@
   .chore.reward .chore-price { color: #7c3aed; }
   .chore.reward .chore-price::before { content: '−'; }
   .chore-count {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 16px;
     color: var(--muted);
     margin-top: 1px;
@@ -267,7 +264,7 @@
     font-size: 15px;
   }
   .empty-state .big {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 28px;
     color: var(--rose);
     font-style: normal;
@@ -289,7 +286,7 @@
     text-align: center;
   }
   .payout-tile .amount {
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 36px;
     font-weight: 700;
     color: var(--rose-deep);
@@ -367,7 +364,7 @@
     left: 0;
     right: 0;
     text-align: center;
-    font-family: 'Caveat', cursive;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
     font-size: 22px;
     color: var(--rose-deep);
   }
@@ -411,8 +408,8 @@
 <div class="wrap">
 
   <header>
-    <h1>👑 Kailey's Quest 👑</h1>
-    <div class="subtitle">Earn your Banwood Maxi Pink scooter</div>
+    <h1>🌌 KAILEY'S GALAXY QUEST 🌌</h1>
+    <div class="subtitle">Mission: earn your Banwood Maxi Pink scooter 🛴</div>
   </header>
 
   <div class="mascot">
@@ -438,35 +435,35 @@
   </div>
 
   <div class="section">
-    <h2 class="section-title">🌅 Morning Routine</h2>
+    <h2 class="section-title">🌅 MORNING OPS</h2>
     <div class="section-sub">Finish all 10 to unlock your first paid chore.</div>
     <div class="banner" id="morningBanner">0 of 10 done</div>
     <div class="chore-grid" id="morningGrid"></div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">☀️ Daytime Check-ins</h2>
+    <h2 class="section-title">☀️ DAY OPS</h2>
     <div class="section-sub">Finish all of these to unlock the rest of your paid chores.</div>
     <div class="banner" id="daytimeBanner">0 of 5 done</div>
     <div class="chore-grid" id="daytimeGrid"></div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">🌙 Evening Routine</h2>
+    <h2 class="section-title">🌙 NIGHT OPS</h2>
     <div class="section-sub">Wind down before bed — sweet dreams!</div>
     <div class="banner" id="eveningBanner">0 of 3 done</div>
     <div class="chore-grid" id="eveningGrid"></div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">🌸 Paid Chores</h2>
+    <h2 class="section-title">💎 BONUS MISSIONS</h2>
     <div class="section-sub">Bonus chores from Mom and Dad. Each has its own price.</div>
     <div class="banner" id="paidBanner">Finish your morning routine first</div>
     <div id="paidContainer"></div>
   </div>
 
   <div class="section">
-    <h2 class="section-title">🛍️ Things to Buy</h2>
+    <h2 class="section-title">🛍️ REWARD SHOP</h2>
     <div class="section-sub">Spend from your scooter fund. Each one needs Mom or Dad approval — they'll get a text when you tap.</div>
     <div class="chore-grid" id="rewardGrid"></div>
   </div>
@@ -627,6 +624,55 @@
   async function sbDelete(path) {
     const r = await fetch(`${SB_BASE}/${path}`, { method: 'DELETE', headers: SB_AUTH });
     if (!r.ok) throw new Error(`DELETE ${path} ${r.status}: ${await r.text()}`);
+  }
+
+  // ===== Offline-first layer: taps ALWAYS work; changes sync when the cloud answers =====
+  const LS_KEY = 'kailey-chart-v2';
+  let kstore = (function(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || null; } catch(e) { return null; } })()
+    || { snapLog: [], snapMenu: [], snapAppr: [], localRows: [], outbox: [], deleted: [] };
+  let cloudUp = false;
+  function kSave() { try { localStorage.setItem(LS_KEY, JSON.stringify(kstore)); } catch(e) {} }
+  function kPending() { return kstore.outbox.length + kstore.deleted.length; }
+  function kSyncUI() { setSync(cloudUp ? 'ok' : 'err', cloudUp ? (kPending() ? 'Saving…' : 'All saved ✓ · ' + new Date().toLocaleTimeString()) : (kPending() ? 'Offline — saved here, will send (' + kPending() + ')' : 'Offline — saved on this screen')); }
+  const _sbPostRaw = sbPost, _sbDeleteRaw = sbDelete;
+  sbPost = async function(path, body, extraPrefer) {
+    if (path !== 'chore_log') return _sbPostRaw(path, body, extraPrefer);
+    try { return await _sbPostRaw(path, body, extraPrefer); }
+    catch (e) {
+      const localId = 'local-' + Date.now() + '-' + Math.floor(Math.random() * 1e6);
+      const row = Object.assign({}, body, { id: localId, completed_at: new Date().toISOString() });
+      kstore.outbox.push({ localId, body }); kstore.localRows.push(row); kSave();
+      return row;
+    }
+  };
+  sbDelete = async function(path) {
+    if (path.indexOf('chore_log?') !== 0) return _sbDeleteRaw(path);
+    try { return await _sbDeleteRaw(path); }
+    catch (e) {
+      const id = path.split('eq.')[1];
+      if (id && id.indexOf('local-') === 0) { kstore.outbox = kstore.outbox.filter(o => o.localId !== id); kstore.localRows = kstore.localRows.filter(r => r.id !== id); }
+      else if (id && kstore.deleted.indexOf(id) < 0) { kstore.deleted.push(id); }
+      kSave();
+    }
+  };
+  async function flushOutbox() {
+    if (!kstore.outbox.length && !kstore.deleted.length) return;
+    const fresh = await sbGet(`chore_log?select=*&kid=eq.${CONFIG.kid}&order=completed_at.asc`);
+    for (const op of kstore.outbox.slice()) {
+      const dupe = fresh.find(r => r.log_date === op.body.log_date && r.chore_id === op.body.chore_id && !!r.is_baseline === !!op.body.is_baseline && (r.price_cents || null) === (op.body.price_cents || null));
+      const row = dupe || await _sbPostRaw('chore_log', op.body);
+      kstore.localRows = kstore.localRows.map(r => r.id === op.localId ? row : r);
+      kstore.outbox = kstore.outbox.filter(o => o.localId !== op.localId);
+    }
+    for (const id of kstore.deleted.slice()) {
+      await _sbDeleteRaw('chore_log?id=eq.' + id);
+      kstore.deleted = kstore.deleted.filter(x => x !== id);
+    }
+    kSave();
+  }
+  function mergedLog(serverRows) {
+    const ids = {}; serverRows.forEach(r => ids[r.id] = 1);
+    return serverRows.filter(r => kstore.deleted.indexOf(r.id) < 0).concat(kstore.localRows.filter(r => !ids[r.id]));
   }
 
   // The "day" rolls over at 10pm local time, not midnight — gives the kids a
@@ -918,7 +964,6 @@
 
   // ============= ACTIONS =============
   async function toggleRoutine(chore) {
-    if (!isReady) { toast('Still loading… try again in a sec'); return; }
     const existing = todayLog.find(r => r.chore_id === chore.id && r.is_baseline);
     try {
       if (existing) {
@@ -939,7 +984,6 @@
   }
 
   async function toggleReward(reward) {
-    if (!isReady) { toast('Still loading… try again in a sec'); return; }
     // Block double-tap while a request is already in flight
     const pending = todayLog.find(r => r.reward_id === reward.id && r.pending);
     if (pending) { toast('Already waiting on Mom & Dad'); return; }
@@ -960,7 +1004,6 @@
   }
 
   async function togglePaid(menuItem) {
-    if (!isReady) { toast('Still loading… try again in a sec'); return; }
     const existing = todayLog.find(r => !r.is_baseline && r.menu_id === menuItem.id);
     try {
       if (existing) {
@@ -1019,41 +1062,43 @@
   }
 
   async function fetchAll() {
-    const [logData, menuData, apprData] = await Promise.all([
-      sbGet(`chore_log?select=*&kid=eq.${CONFIG.kid}&order=completed_at.asc`),
-      sbGet(`chore_menu?select=*&kid=eq.${CONFIG.kid}&active=eq.true&order=created_at.asc`),
-      sbGet(`unlock_approvals?select=*&kid=eq.${CONFIG.kid}&approval_date=eq.${todayKey}`)
-    ]);
-    allLog    = tagMenuIds(logData);
+    try { await flushOutbox(); } catch (e) { /* still offline — snapshots below cover us */ }
+    let logData, menuData, apprData;
+    try {
+      [logData, menuData, apprData] = await Promise.all([
+        sbGet(`chore_log?select=*&kid=eq.${CONFIG.kid}&order=completed_at.asc`),
+        sbGet(`chore_menu?select=*&kid=eq.${CONFIG.kid}&active=eq.true&order=created_at.asc`),
+        sbGet(`unlock_approvals?select=*&kid=eq.${CONFIG.kid}&approval_date=eq.${todayKey}`)
+      ]);
+      kstore.snapLog = logData; kstore.snapMenu = menuData; kstore.snapAppr = apprData; kSave();
+      cloudUp = true;
+    } catch (e) {
+      logData = kstore.snapLog; menuData = kstore.snapMenu; apprData = kstore.snapAppr;
+      cloudUp = false;
+    }
+    allLog    = tagMenuIds(mergedLog(logData));
     todayLog  = allLog.filter(r => r.log_date === todayKey);
     menu      = menuData;
     approvals = apprData;
+    kSyncUI();
   }
 
   async function init() {
-    setSync('ok', 'Loading…');
-    try {
-      await fetchAll();
-      renderPaid();
-      refreshUI();
-      isReady = true;
-      setSync('ok', `Synced · ${new Date().toLocaleTimeString()}`);
-
-      // Poll every 5s for parent approvals + new bonus chores from iMessage
-      setInterval(async () => {
-        try {
-          await fetchAll();
-          renderPaid();
-          refreshUI();
-          setSync('ok', `Synced · ${new Date().toLocaleTimeString()}`);
-        } catch (e) {
-          setSync('err', 'Sync paused — retrying');
-        }
-      }, 5000);
-    } catch (e) {
-      console.error(e);
-      setSync('err', 'Offline — ' + (e.message || e));
-    }
+    // Hydrate instantly from the on-screen cache so taps work right away
+    allLog    = tagMenuIds(mergedLog(kstore.snapLog));
+    todayLog  = allLog.filter(r => r.log_date === todayKey);
+    menu      = kstore.snapMenu;
+    approvals = kstore.snapAppr;
+    renderPaid();
+    refreshUI();
+    isReady = true;
+    kSyncUI();
+    try { await fetchAll(); renderPaid(); refreshUI(); } catch (e) { /* fetchAll handles offline */ }
+    // Poll every 5s for parent approvals + new bonus chores from iMessage
+    setInterval(async () => {
+      try { await fetchAll(); renderPaid(); refreshUI(); } catch (e) { setSync('err', 'Sync paused — retrying'); }
+    }, 5000);
+    window.addEventListener('online', () => { fetchAll().then(() => { renderPaid(); refreshUI(); }).catch(() => {}); });
   }
 
   setInterval(() => {
