@@ -147,6 +147,7 @@
     font-size: 16px;
     background: linear-gradient(90deg, #4c1d95, #831843);
   }
+  .games-btn { display: block; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 1px; padding: 20px; border-radius: 18px; background: linear-gradient(90deg, var(--rose), var(--gold)); color: #14092b; text-decoration: none; box-shadow: 0 10px 28px rgba(232, 121, 249, 0.35); }
   .banner.complete {
     background: linear-gradient(90deg, #14532d, #166534);
     color: #bbf7d0;
@@ -439,6 +440,12 @@
     <div class="section-sub">Finish all 10 to unlock your first paid chore.</div>
     <div class="banner" id="morningBanner">0 of 10 done</div>
     <div class="chore-grid" id="morningGrid"></div>
+  </div>
+
+  <div class="section" id="gamesCard" style="display:none">
+    <h2 class="section-title">🎮 MORNING COMPLETE!</h2>
+    <div class="section-sub">All 10 morning missions done — you earned game time!</div>
+    <a class="games-btn" href="https://clearrank.ai/games.html">🎮 PLAY GAMES 🎮</a>
   </div>
 
   <div class="section">
@@ -803,6 +810,7 @@
     const daytimeCount = DAYTIME.filter(c => todayRoutine.some(r => r.chore_id === c.id)).length;
     const morningDone  = morningCount === MORNING.length;
     const daytimeDone  = daytimeCount === DAYTIME.length;
+    const gc = document.getElementById('gamesCard'); if (gc) gc.style.display = morningDone ? 'block' : 'none';
     const paidDoneCount = todayPaid.length;
 
     const morningAppr = approvals.find(a => a.stage === 'morning');
